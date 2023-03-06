@@ -9,8 +9,9 @@ def logger_(old_function):
         with open('main.log', 'a') as f:
             f.write(f'Data: {datetime.datetime.now()}\n'
                     f'name function: {old_function.__name__}\n'
-                    f'parameters: {args}, {kwargs}\n'
-                    f'result: {result}\n\n')
+                    f'parameters: {args}, {kwargs}\n')
+            result = old_function(*args, **kwargs)
+            f.write(f'result: {result}\n\n')
         return result
     return new_function
 
@@ -58,12 +59,13 @@ def test_1():
 def logger(path):
     def __logger(old_function):
         def new_function(*args, **kwargs):
-            result = old_function(*args, **kwargs)
+            # result = old_function(*args, **kwargs)
             with open(path, 'a') as f:
                 f.write(f'Data: {datetime.datetime.now()}\n'
                         f'name function: {old_function.__name__}\n'
-                        f'parameters: {args}, {kwargs}\n'
-                        f'result: {result}\n\n')
+                        f'parameters: {args}, {kwargs}\n')
+                result = old_function(*args, **kwargs)
+                f.write(f'result: {result}\n\n')
             return result
         return new_function
     return __logger
