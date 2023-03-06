@@ -1,6 +1,6 @@
 import datetime
 import os
-
+import re
 ######################### ПРОСТОЙ ДЕКОРАТОР ##############################
 
 def logger_(old_function):
@@ -108,9 +108,38 @@ def test_2():
         for item in (4.3, 2.2, 6.5):
             assert str(item) in log_file_content, f'{item} должен быть записан в файл'
 
+######################### СВОЙ ПРИМЕР #########################
+
+cont = [
+    ['Мартиняхин Виталий Геннадьевич', '', '', 'ФНС', '', '+74959130037', ''],
+    ['Наркаев', 'Вячеслав Рифхатович', '', 'ФНС', '', '8 495-913-0168', '']
+]
+
+
+@logger(path='log_2.log')
+def arrange(contacts):
+    for c in contacts:
+        item = ' '.join(c[:3]).split(' ')
+        c[:3] = item[:3]
+    return contacts
+
+
+@logger_
+def format_num(contacts):
+    contact_list = []
+    for contact in arrange(contacts):
+        pattern = r'(\+7|8)\s*\(?(\d{3})\)?[\s|-]?(\d{3})[\s|-]?(\d{2})[\s|-]?(\d{2})\s*\(?([д][о]?[б]?[.]?\s*\d+)?\)?'
+        substitution = r'+7(\2)\3-\4-\5 \6'
+        res = re.sub(pattern, substitution, contact[5])
+        contact[5] = res
+        contact_list.append(contact)
+    return contact_list
+
 
 if __name__ == '__main__':
     # Задание 1
     test_1()
     # Задание 2
     test_2()
+    # Задание 3
+    format_num(cont)
