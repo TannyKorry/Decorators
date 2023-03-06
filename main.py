@@ -3,11 +3,14 @@ import os
 
 ######################### ПРОСТОЙ ДЕКОРАТОР ##############################
 
-def logger(old_function):
+def logger_(old_function):
     def new_function(*args, **kwargs):
         result = old_function(*args, **kwargs)
         with open('main.log', 'a') as f:
-            f.write(f'Data: {datetime.datetime.now()}\nname function: {old_function.__name__}\nparameters: {args}, {kwargs}\nresult: {result}\n\n')
+            f.write(f'Data: {datetime.datetime.now()}\n'
+                    f'name function: {old_function.__name__}\n'
+                    f'parameters: {args}, {kwargs}\n'
+                    f'result: {result}\n\n')
         return result
     return new_function
 
@@ -17,15 +20,15 @@ def test_1():
     if os.path.exists(path):
         os.remove(path)
 
-    @logger
+    @logger_
     def hello_world():
         return 'Hello World'
 
-    @logger
+    @logger_
     def summator(a, b=0):
         return a + b
 
-    @logger
+    @logger_
     def div(a, b):
         return a / b
 
@@ -49,17 +52,20 @@ def test_1():
         assert str(item) in log_file_content, f'{item} должен быть записан в файл'
 
 
-######################### ПАРАМЕТРИЗОВАНЫЙ ДЕКОРАТОР #############################
+######################### ПАРАМЕТРИЗОВАННЫЙ ДЕКОРАТОР #############################
+
 
 def logger(path):
-    ...
-
     def __logger(old_function):
         def new_function(*args, **kwargs):
-            ...
-
+            result = old_function(*args, **kwargs)
+            with open(path, 'a') as f:
+                f.write(f'Data: {datetime.datetime.now()}\n'
+                        f'name function: {old_function.__name__}\n'
+                        f'parameters: {args}, {kwargs}\n'
+                        f'result: {result}\n\n')
+            return result
         return new_function
-
     return __logger
 
 
@@ -104,5 +110,7 @@ def test_2():
 
 
 if __name__ == '__main__':
+    # Задание 1
     test_1()
+    # Задание 2
     test_2()
